@@ -1,0 +1,10 @@
+http:
+  port: "8081"
+  
+american:
+  host: "training4-american-api-rsampr.us-e2.cloudhub.io"
+  port: "80"
+  basepath: "/"
+  protocol: "HTTP"
+  client_id: 0059bafa631348408ff0e20c11d5d27d
+  client_secret: D6Fa6eB985a74758924dBa208f9d9418
