@@ -13,4 +13,15 @@ http://www.mulesoft.org/schema/mule/american-flights-api http://www.mulesoft.org
 	<sub-flow name="setCode" doc:id="2c3ef243-fb5a-4c96-a276-6ee6fb24609e" >
 		<set-variable value="#[message.attributes.queryParams.code default 'SFO']" doc:name="code" doc:id="e7b17d58-f649-41d4-b4e6-e24e019ca71a" variableName="code"/>
 	</sub-flow>
+	<flow name="getUnitedFlights" doc:id="e7eb1195-df6c-47a3-9311-f580d3d7dc21" >
+		<http:listener doc:name="GET /united" doc:id="9820e981-0813-408e-918f-f1ca43382586" config-ref="HTTP_Listener_config" path="/united" allowedMethods="GET"/>
+		<flow-ref doc:name="Flow Reference" doc:id="fa84ac6f-8c8b-444d-8e7d-fb590b6462b7" name="setCode"/>
+		<http:request method="GET" doc:name="Get flights" doc:id="3c293c81-d624-4fa7-af4a-785b3335c432" config-ref="HTTP_Request_config_training" path="/united/flights/{dest}">
+			<http:uri-params ><![CDATA[#[output application/java
+---
+{
+	"dest" : vars.code
+}]]]></http:uri-params>
+		</http:request>
+	</flow>
 </mule>

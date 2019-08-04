@@ -8,3 +8,9 @@ american:
   protocol: "HTTP"
   client_id: 0059bafa631348408ff0e20c11d5d27d
   client_secret: D6Fa6eB985a74758924dBa208f9d9418
+  
+training:
+  host: "mu.learn.mulesoft.com"
+  port: "80"
+  basepath: "/"
+  protocol: "HTTP"
