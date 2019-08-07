@@ -64,12 +64,12 @@ payload.flights map ( flight , indexOfFlight ) -> {
 		</ee:transform>
 		<logger level="INFO" doc:name="Logger" doc:id="1c722f4a-55cf-4862-98d4-9bc58adee095" />
 	</flow>
-	<flow name="geDeltaFlights" doc:id="457f0e31-8aff-49e9-a62b-190ca773859d" >
-		<http:listener doc:name="Listener" doc:id="d264fa6d-4483-4a02-bd78-3375b5fe5bda" config-ref="HTTP_Listener_config" path="/delta"/>
-		<flow-ref doc:name="setCode" doc:id="7d68533b-d47c-4efd-9ac9-86d8abfdeccc" name="setCode"/>
-		<ee:transform doc:name="Transform Message" doc:id="eb8b16ed-1b23-4e37-aa99-c4ebebf9a4bd" >
-			<ee:message >
-				<ee:set-payload ><![CDATA[%dw 2.0
+	<flow name="getDeltaFlights" doc:id="457f0e31-8aff-49e9-a62b-190ca773859d">
+		<http:listener doc:name="Listener" doc:id="d264fa6d-4483-4a02-bd78-3375b5fe5bda" config-ref="HTTP_Listener_config" path="/delta" />
+		<flow-ref doc:name="setCode" doc:id="7d68533b-d47c-4efd-9ac9-86d8abfdeccc" name="setCode" />
+		<ee:transform doc:name="Transform Message" doc:id="eb8b16ed-1b23-4e37-aa99-c4ebebf9a4bd">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
 output application/xml
 ns ns0 http://soap.training.mulesoft.com/
 ---
@@ -80,10 +80,10 @@ ns ns0 http://soap.training.mulesoft.com/
 }]]></ee:set-payload>
 			</ee:message>
 		</ee:transform>
-		<wsc:consume doc:id="69145810-3645-4728-88e5-16e5287053d6" config-ref="Web_Service_Consumer_Config" operation="findFlight" doc:name="Get flights"/>
-		<ee:transform doc:name="Transform Message" doc:id="a0c6c30e-3931-4815-8e19-cffa165ee703" >
-			<ee:message >
-				<ee:set-payload ><![CDATA[%dw 2.0
+		<wsc:consume doc:id="69145810-3645-4728-88e5-16e5287053d6" config-ref="Web_Service_Consumer_Config" operation="findFlight" doc:name="Get flights" />
+		<ee:transform doc:name="Transform Message" doc:id="a0c6c30e-3931-4815-8e19-cffa165ee703">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
 output application/java
 ns ns0 http://soap.training.mulesoft.com/
 ---
@@ -102,5 +102,28 @@ payload.body.ns0#findFlightResponse.*return map ( return , indexOfReturn ) -> {
 			</ee:message>
 		</ee:transform>
 		<logger level="INFO" doc:name="Logger" doc:id="029e27b9-4356-4a96-81f8-75e452b358dc" />
+	</flow>
+	<flow name="getAllAirlineFlows" doc:id="958939fe-6b8c-434c-a048-11017c318597" >
+		<http:listener doc:name="GET " doc:id="20f7421e-ca46-4e91-a5f6-c28c8a6929ed" config-ref="HTTP_Listener_config" path="/flights"/>
+		<scatter-gather doc:name="Scatter-Gather" doc:id="e5a195c6-1dd3-4fd4-9984-80ad3c557837" >
+			<route >
+				<flow-ref doc:name="getAmericanFlights" doc:id="800a1ce5-e8e5-4a43-a466-319bd723f0bd" name="getAmericanFlights"/>
+			</route>
+			<route >
+				<flow-ref doc:name="getUnitedFlights" doc:id="82000066-e4bd-40e3-9a0a-d23f13bb88a6" name="getUnitedFlights"/>
+			</route>
+			<route >
+				<flow-ref doc:name="getDeltaFlights" doc:id="dea86c01-b5a0-4f00-a78f-e3696de95b58" name="getDeltaFlights"/>
+			</route>
+		</scatter-gather>
+		<ee:transform doc:name="Transform Message" doc:id="208422ba-665c-4b4a-9b3b-8f8afe3c885e" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+flatten(payload..payload)]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger level="INFO" doc:name="Logger" doc:id="b69e58bd-e5c0-4e74-9585-aed234f25883" />
 	</flow>
 </mule>
