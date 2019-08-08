@@ -121,7 +121,11 @@ flatten(payload..payload)]]></ee:set-payload>
 		<logger level="INFO" doc:name="Logger" doc:id="b69e58bd-e5c0-4e74-9585-aed234f25883" />
 	</flow>
 	<flow name="getFlights" doc:id="5a6f80f7-4486-4138-979d-078a5cfcd38c" >
-		<http:listener doc:name="GET /flights" doc:id="20f7421e-ca46-4e91-a5f6-c28c8a6929ed" config-ref="HTTP_Listener_config" path="/flights" />
+		<http:listener doc:name="GET /flights" doc:id="20f7421e-ca46-4e91-a5f6-c28c8a6929ed" config-ref="HTTP_Listener_config" path="/flights" >
+			<http:error-response>
+				<http:body ><![CDATA[#[payload]]]></http:body>
+			</http:error-response>
+		</http:listener>
 		<set-variable value="#[message.attributes.queryParams.airline]" doc:name="airline" doc:id="a78a260b-1864-41aa-914f-f1ad09747d36" variableName="airline"/>
 		<flow-ref doc:name="setCode" doc:id="f2695083-e3c9-48c1-a08d-f136cab5bef6" name="setCode"/>
 		<validation:is-true doc:name="Is true" doc:id="6d228116-bd59-4194-a7ab-859df03c534f" message="#['Invalid destination' ++ ' ' ++ (vars.code default ' ')]" expression="#[['SFO','LAX','CLE','PDX','PDF'] contains vars.code]"/>
