@@ -234,9 +234,11 @@ fun getNumSeats(planeType: String)=
 using(flights = 
 	payload..*return map(object , index) -> {
 		dest: object.destination,
-		price: object.price	,
+		price: object.price	as Number as String {format: "###.00"},
 		totalSeats: getNumSeats(object.planeType as String),
-		plane: object.planeType	
+		plane: upper(object.planeType	as String),
+		date: object.departureDate as Date {format: "yyyy/MM/dd"}
+					as String {format: "MM dd, yyyy"}
 }
 )
 
