@@ -90,7 +90,7 @@ type united_flights_json = {|
     <types:processor-declaration>
       <types:input-event>
         <types:message>
-          <types:payload type="flights_json"/>
+          <types:payload type="flights_xml"/>
         </types:message>
       </types:input-event>
     </types:processor-declaration>

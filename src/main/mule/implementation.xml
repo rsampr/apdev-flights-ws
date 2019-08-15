@@ -222,11 +222,25 @@ data : {
 		<ee:transform doc:name="Transform Message" doc:id="661e1758-5efe-4c16-909b-78e45522caa3" >
 			<ee:message >
 				<ee:set-payload ><![CDATA[%dw 2.0
-output application/xml
----
-flights: payload map (object , index) -> {
-	'flight$(index)': object
-}]]></ee:set-payload>
+output application/dw
+
+fun getNumSeats(planeType: String)=
+	if (planeType contains('737'))
+		150
+	else
+		300
+---	
+
+using(flights = 
+	payload..*return map(object , index) -> {
+		dest: object.destination,
+		price: object.price	,
+		totalSeats: getNumSeats(object.planeType as String),
+		plane: object.planeType	
+}
+)
+
+flights]]></ee:set-payload>
 			</ee:message>
 		</ee:transform>
 		<logger level="INFO" doc:name="Logger" doc:id="e30ec3f8-534f-4606-b750-cbd429685f7d" />
