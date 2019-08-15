@@ -16,7 +16,11 @@ http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/
 		<http:request-connection host="${training.host}" port="${training.port}" />
 	</http:request-config>
 	<wsc:config name="Web_Service_Consumer_Config" doc:name="Web Service Consumer Config" doc:id="8ad8e728-53d2-4172-9ffa-a6d177e2da4f" >
-		<wsc:connection wsdlLocation="${delta.wsdl}" service="${delta.service}" port="${delta.port}" address="${delta.address}" />
+		<wsc:connection wsdlLocation="${delta.wsdl}" service="${delta.service}" port="${delta.port}" address="${delta.address}" >
+			<reconnection >
+				<reconnect />
+			</reconnection>
+		</wsc:connection>
 	</wsc:config>
 	<configuration doc:name="Configuration" doc:id="9b52dd18-4adb-44d1-9600-20f5dd3c891c" defaultErrorHandler-ref="globalError_Handler" />
 	<error-handler name="globalError_Handler" doc:id="c92f3f79-b62e-4653-a838-b40eed346248" >
