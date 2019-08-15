@@ -237,7 +237,7 @@ using(flights =
 		destination: object.destination,
 		price: object.price	as Number as Currency,
 	//	totalSeats: getNumSeats(object.planeType as String),
-		planeType: upper(object.planeType	as String),
+		planeType: upper(replace(object.planeType	as String, /(Boing)/) with "Boeing"),
 		departureDate: object.departureDate as Date {format: "yyyy/MM/dd"}
 					as String {format: "MM dd, yyyy"}
 } as Flight
