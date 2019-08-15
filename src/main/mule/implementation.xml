@@ -198,18 +198,37 @@ flatten(payload..payload)]]></ee:set-payload>
 		</ee:transform>
 		<logger level="INFO" doc:name="Logger" doc:id="b69e58bd-e5c0-4e74-9585-aed234f25883" />
 	</flow>
-	<flow name="postFlight" doc:id="3f0c177c-b6db-48c4-863e-ff9262a7612a" >
+	<flow name="postFlight" doc:id="3f0c177c-b6db-48c4-863e-ff9262a7612a">
 		<ee:transform doc:name="Transform Message" doc:id="beb30754-b27c-483b-9abc-b3b60bff8576">
 			<ee:message>
 				<ee:set-payload resource="json_flight_playground.dwl" />
 			</ee:message>
-			<ee:variables >
-				<ee:set-variable variableName="DWoutput" ><![CDATA[%dw 2.0
+			<ee:variables>
+				<ee:set-variable variableName="DWoutput"><![CDATA[%dw 2.0
 output application/xml
 ---
-payload]]></ee:set-variable>
+data : {
+	hub: "MUA",
+	flight @(airline: payload.airline):{
+		code: payload.toAirportCode
+	}
+}]]></ee:set-variable>
 			</ee:variables>
 		</ee:transform>
 		<logger level="INFO" doc:name="Logger" doc:id="ad790d8a-699f-401e-a48d-06e8e71aa385" />
+	</flow>
+	<flow name="postMultipleFlights" doc:id="6f49ac8e-066c-4f8c-b8cb-8ee864c2ed20" >
+		<http:listener doc:name="POST /multipleflights" doc:id="967cd65d-fd4c-49bb-bacd-d19ad9db2911" config-ref="HTTP_Listener_config" path="/multipleflights" allowedMethods="POST"/>
+		<ee:transform doc:name="Transform Message" doc:id="661e1758-5efe-4c16-909b-78e45522caa3" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/xml
+---
+flights: payload map (object , index) -> {
+	'flight$(index)': object
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger level="INFO" doc:name="Logger" doc:id="e30ec3f8-534f-4606-b750-cbd429685f7d" />
 	</flow>
 </mule>
